@@ -36,7 +36,7 @@ public void OnPluginStart() {
 	LoadTranslations("ShowName.phrases");
 
 	RegConsoleCmd("sm_showname", Command_ShowHud);
-	hShowNameCookie = RegClientCookie("showname_cookie", "ShowName", CookieAccess_Protected);
+	hShowNameCookie = RegClientCookie("ShowName", "ShowName Cookie", CookieAccess_Protected);
 
 	SetCookieMenuItem(PrefMenu, 0, "");
 
@@ -59,8 +59,8 @@ public void OnClientCookiesCached(int client) {
 	char sCookieValue[2];
 	GetClientCookie(client, hShowNameCookie, sCookieValue, sizeof(sCookieValue));
 	if(sCookieValue[0] == '\0') {
-		SetClientCookie(client, hShowNameCookie, "1");
-		strcopy(sCookieValue, sizeof(sCookieValue), "1");
+		SetClientCookie(client, hShowNameCookie, "0");
+		strcopy(sCookieValue, sizeof(sCookieValue), "0");
 	}
 	bClientShowHUD[client] = view_as<bool>(StringToInt(sCookieValue));
 }
@@ -82,10 +82,10 @@ public void PrefMenu(int client, CookieMenuAction actions, any info, char[] buff
 	if (actions == CookieMenuAction_SelectOption) {
 		if(bClientShowHUD[client]) {
 			bClientShowHUD[client] = false;
-			CPrintToChat(client, "\x10[\x09ShowName\x10]\x05 ShowName has been \x04Disabled\x05.");
+			CPrintToChat(client, "\x10[\x09ShowName\x10]\x05 %t", "DisabledMsg");
 		} else {
 			bClientShowHUD[client] = true;
-			CPrintToChat(client, "\x10[\x09ShowName\x10]\x05 ShowName has been \x04Enabled\x05.");
+			CPrintToChat(client, "\x10[\x09ShowName\x10]\x05 %t", "EnabledMsg");
 		}
 
 		char sCookieValue[2];
@@ -103,10 +103,10 @@ public Action Command_ShowHud(int client, int args) {
 	
 	if(bClientShowHUD[client]) {
 		bClientShowHUD[client] = false;
-		CReplyToCommand(client, "\x10[\x09ShowName\x10]\x05 ShowName has been \x04Disabled\x05.");
+		CReplyToCommand(client, "\x10[\x09ShowName\x10]\x05 %t", "DisabledMsg");
 	} else {
 		bClientShowHUD[client] = true;
-		CReplyToCommand(client, "\x10[\x09ShowName\x10]\x05 ShowName has been \x04Enabled\x05.");
+		CReplyToCommand(client, "\x10[\x09ShowName\x10]\x05 %t", "EnabledMsg");
 	}
 	
 	char sCookieValue[2];

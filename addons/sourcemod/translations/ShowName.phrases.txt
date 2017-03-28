@@ -45,4 +45,14 @@
 		"en"	"Disabled"
 		"jp"	"無効"
 	}
+	"EnabledMsg"
+	{
+		"en"	"ShowName has been {green}Enabled{lightgreen}."
+		"jp"	"ShowName を {green}有効{lightgreen} にしました."
+	}
+	"DisabledMsg"
+	{
+		"en"	"ShowName has been {green}Disabled{lightgreen}."
+		"jp"	"ShowName を {green}無効{lightgreen} にしました."
+	}
 }
