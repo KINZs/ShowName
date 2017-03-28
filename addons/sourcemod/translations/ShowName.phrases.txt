@@ -1,0 +1,48 @@
+"Phrases"
+{
+	"Friend"
+	{
+		"en"	"Friend"
+		"jp"	"味方"
+	}
+	"Enemy"
+	{
+		"en"	"Enemy"
+		"jp"	"敵"
+	}
+	"Human"
+	{
+		"en"	"Human"
+		"jp"	"人間"
+	}
+	"Zombie"
+	{
+		"en"	"Zombie"
+		"jp"	"ゾンビ"
+	}
+	"Health"
+	{
+		"en"	"Health"
+		"jp"	"ヘルス"
+	}
+	"UserID"
+	{
+		"en"	"UserID"
+		"jp"	"ユーザーID"
+	}
+	"ShowName"
+	{
+		"en"	"Show Name (To Under the Crosshair)"
+		"jp"	"Show Name (レティクル下の名前表示)"
+	}
+	"Enabled"
+	{
+		"en"	"Enabled"
+		"jp"	"有効"
+	}
+	"Disabled"
+	{
+		"en"	"Disabled"
+		"jp"	"無効"
+	}
+}
