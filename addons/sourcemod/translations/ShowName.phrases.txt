@@ -4,55 +4,87 @@
 	{
 		"en"	"Friend"
 		"jp"	"味方"
+		"fr"	"Ami"
+		"ko"	"아군"
 	}
 	"Enemy"
 	{
 		"en"	"Enemy"
 		"jp"	"敵"
+		"fr"	"Ennemi"
+		"ko"	"적군"
 	}
 	"Human"
 	{
 		"en"	"Human"
 		"jp"	"人間"
+		"fr"	"Humain"
+		"en"	"인간"
 	}
 	"Zombie"
 	{
 		"en"	"Zombie"
 		"jp"	"ゾンビ"
+		"fr"	"Zombie"
+		"ko"	"좀비"
 	}
 	"Health"
 	{
 		"en"	"Health"
 		"jp"	"ヘルス"
+		"fr"	"Vie"
+		"ko"	"체력"
 	}
 	"UserID"
 	{
 		"en"	"UserID"
 		"jp"	"ユーザーID"
+		"fr"	"UserID"
+		"ko"	"유저ID"
 	}
 	"ShowName"
 	{
 		"en"	"Show Name (To Under the Crosshair)"
 		"jp"	"Show Name (レティクル下の名前表示)"
+		"fr"	"Afficher le nom (En dessous du crosshair)"
+		"ko"	"닉네임표시 (크로스헤어 밑)"
 	}
 	"Enabled"
 	{
 		"en"	"Enabled"
 		"jp"	"有効"
+		"fr"	"Activée"
+		"ko"	"켜기"
 	}
 	"Disabled"
 	{
 		"en"	"Disabled"
 		"jp"	"無効"
+		"fr"	"Désactivé"
+		"ko"	"끄기"
+	}
+	"LookAtWeapon"
+	{
+		"en"	"Inspect Weapon Key"
+		"jp"	"武器を調べるキー"
 	}
 	"EnabledMsg"
 	{
 		"en"	"ShowName has been {green}Enabled{lightgreen}."
 		"jp"	"ShowName を {green}有効{lightgreen} にしました."
+		"fr"	"Le nom a été afficher {green}Activée{lightgreen}."
+		"ko"	"닉네임 표시 설정을 {green}활성화{lightgreen} 하셨습니다."
 	}
 	"DisabledMsg"
 	{
 		"en"	"ShowName has been {green}Disabled{lightgreen}."
 		"jp"	"ShowName を {green}無効{lightgreen} にしました."
+		"fr"	"Le nom a été afficher {green}Désactivé{lightgreen}."
+		"ko"	"닉네임 표시 설정을 {green}비활성화{lightgreen} 하셨습니다."
+	}
+	"LookAtWeaponMsg"
+	{
+		"en"	"ShowName has been {green}available{lightgreen} with {lime}Inspect Weapon{lightgreen} Key."
+		"jp"	"ShowName を {lime}武器を調べる{lightgreen} キーで {green}利用可能{lightgreen} にしました."
 	}
 }

@@ -11,7 +11,8 @@
 #define REQUIRE_PLUGIN
 
 Handle hShowNameCookie;
-bool bClientShowHUD[MAXPLAYERS] = {false, ...};
+int iClientShowHUD[MAXPLAYERS+1] = {false, ...};
+bIsClientPressingLookAtWeapon[MAXPLAYERS+1] = {false, ...};
 
 bool bLateLoad = false;
 bool bValid_zombiereloaded = false;
@@ -20,7 +21,7 @@ public Plugin myinfo = {
 	name = "[CS:GO] Simple Show Name",
 	description = "Show name of aimed target under the crosshair",
 	author = "SHUFEN from POSSESSION.tokyo",
-	version = "1.0",
+	version = "1.1",
 	url = "https://possession.tokyo"
 };
 
@@ -39,6 +40,9 @@ public void OnPluginStart() {
 	hShowNameCookie = RegClientCookie("ShowName", "ShowName Cookie", CookieAccess_Protected);
 
 	SetCookieMenuItem(PrefMenu, 0, "");
+
+	AddCommandListener(Command_LookAtWeaponPress, "+lookatweapon");
+	AddCommandListener(Command_LookAtWeaponRelease, "-lookatweapon");
 
 	if(bLateLoad) {
 		for(int i = 1; i <= MaxClients; i++) {
@@ -62,62 +66,83 @@ public void OnClientCookiesCached(int client) {
 		SetClientCookie(client, hShowNameCookie, "0");
 		strcopy(sCookieValue, sizeof(sCookieValue), "0");
 	}
-	bClientShowHUD[client] = view_as<bool>(StringToInt(sCookieValue));
+	iClientShowHUD[client] = StringToInt(sCookieValue);
 }
 
 public void OnClientPutInServer(int client) {
 	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost);
+	bIsClientPressingLookAtWeapon[client] = false;
 }
 
 public void OnClientDisconnect(int client) {
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
-	bClientShowHUD[client] = false;
+	iClientShowHUD[client] = 0;
+	bIsClientPressingLookAtWeapon[client] = false;
 }
 
 public void PrefMenu(int client, CookieMenuAction actions, any info, char[] buffer, int maxlen) {
 	if (actions == CookieMenuAction_DisplayOption) {
-		FormatEx(buffer, maxlen, "%T: %T", "ShowName", client, bClientShowHUD[client] ? "Enabled" : "Disabled", client);
+		switch(iClientShowHUD[client]) {
+			case 0: FormatEx(buffer, maxlen, "%T: %T", "ShowName", client, "Disabled", client);
+			case 1: FormatEx(buffer, maxlen, "%T: %T", "ShowName", client, "Enabled", client);
+			case 2: FormatEx(buffer, maxlen, "%T: %T", "ShowName", client, "LookAtWeapon", client);
+		}
 	}
 
 	if (actions == CookieMenuAction_SelectOption) {
-		if(bClientShowHUD[client]) {
-			bClientShowHUD[client] = false;
-			CPrintToChat(client, "\x10[\x09ShowName\x10]\x05 %t", "DisabledMsg");
-		} else {
-			bClientShowHUD[client] = true;
-			CPrintToChat(client, "\x10[\x09ShowName\x10]\x05 %t", "EnabledMsg");
-		}
-
-		char sCookieValue[2];
-		IntToString(view_as<int>(bClientShowHUD[client]), sCookieValue, sizeof(sCookieValue));
-		SetClientCookie(client, hShowNameCookie, sCookieValue);
+		ToggleShowHud(client);
 		ShowCookieMenu(client);
 	}
 }
 
 public Action Command_ShowHud(int client, int args) {
-	if(!AreClientCookiesCached(client)) {
-		CReplyToCommand(client, "\x10[\x09ShowName\x10]\x05 Please wait. Your settings are still loading.");
-		return Plugin_Handled;
-	}
-	
-	if(bClientShowHUD[client]) {
-		bClientShowHUD[client] = false;
-		CReplyToCommand(client, "\x10[\x09ShowName\x10]\x05 %t", "DisabledMsg");
-	} else {
-		bClientShowHUD[client] = true;
-		CReplyToCommand(client, "\x10[\x09ShowName\x10]\x05 %t", "EnabledMsg");
-	}
-	
-	char sCookieValue[2];
-	IntToString(view_as<int>(bClientShowHUD[client]), sCookieValue, sizeof(sCookieValue));
-	SetClientCookie(client, hShowNameCookie, sCookieValue);
-	
+	if(client < 1 || client > MaxClients) return Plugin_Handled;
+
+	ToggleShowHud(client);
 	return Plugin_Handled;
 }
 
+void ToggleShowHud(int client) {
+	switch(iClientShowHUD[client]) {
+		case 0: {
+			iClientShowHUD[client] = 1;
+			CReplyToCommand(client, "\x10[\x09ShowName\x10]\x05 %t", "EnabledMsg");
+		}
+		case 1: {
+			iClientShowHUD[client] = 2;
+			CReplyToCommand(client, "\x10[\x09ShowName\x10]\x05 %t", "LookAtWeaponMsg");
+		}
+		case 2: {
+			iClientShowHUD[client] = 0;
+			CReplyToCommand(client, "\x10[\x09ShowName\x10]\x05 %t", "DisabledMsg");
+		}
+	}
+	
+	char sCookieValue[2];
+	IntToString(iClientShowHUD[client], sCookieValue, sizeof(sCookieValue));
+	SetClientCookie(client, hShowNameCookie, sCookieValue);
+}
+
+public Action Command_LookAtWeaponPress(int client, const char[] command, int argc)
+{
+	if(!IsClientInGame(client))
+		return Plugin_Continue;
+
+	bIsClientPressingLookAtWeapon[client] = true;
+	return Plugin_Continue;
+}
+
+public Action Command_LookAtWeaponRelease(int client, const char[] command, int argc)
+{
+	if(!IsClientInGame(client))
+		return Plugin_Continue;
+
+	bIsClientPressingLookAtWeapon[client] = false;
+	return Plugin_Continue;
+}
+
 public void OnPostThinkPost(int client) {
-	if (bClientShowHUD[client] && IsClientInGame(client)) {
+	if ((iClientShowHUD[client] == 1 || (iClientShowHUD[client] == 2 && bIsClientPressingLookAtWeapon[client])) && IsClientInGame(client)) {
 		int iClientTeam = GetClientTeam(client);
 		int target = GetClientAimTarget2(client);
 		if(target > 0 && target <= MaxClients && IsClientInGame(target) && IsPlayerAlive(target)) {
